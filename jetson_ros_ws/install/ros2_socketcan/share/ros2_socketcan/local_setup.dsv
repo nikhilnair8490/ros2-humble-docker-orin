@@ -1,0 +1,3 @@
+source;share/ros2_socketcan/environment/ament_prefix_path.sh
+source;share/ros2_socketcan/environment/library_path.sh
+source;share/ros2_socketcan/environment/path.sh
