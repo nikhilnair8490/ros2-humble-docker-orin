@@ -1,0 +1,2 @@
+drivers::socketcan::SocketCanReceiverNode;lib/libsocket_can_receiver_node.so
+drivers::socketcan::SocketCanSenderNode;lib/libsocket_can_sender_node.so

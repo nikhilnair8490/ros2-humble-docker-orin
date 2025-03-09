@@ -1,0 +1,1 @@
+rclcpp;rclcpp_components;rclcpp_lifecycle;lifecycle_msgs;can_msgs;ros2_socketcan_msgs;ament_lint_auto;ament_lint_common;ament_cmake_gtest

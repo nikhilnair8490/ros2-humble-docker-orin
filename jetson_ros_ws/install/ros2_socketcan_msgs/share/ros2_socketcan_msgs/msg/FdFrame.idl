@@ -1,0 +1,23 @@
+// generated from rosidl_adapter/resource/msg.idl.em
+// with input from ros2_socketcan_msgs/msg/FdFrame.msg
+// generated code does not contain a copyright notice
+
+#include "std_msgs/msg/Header.idl"
+
+module ros2_socketcan_msgs {
+  module msg {
+    struct FdFrame {
+      std_msgs::msg::Header header;
+
+      uint32 id;
+
+      boolean is_extended;
+
+      boolean is_error;
+
+      uint8 len;
+
+      sequence<uint8, 64> data;
+    };
+  };
+};
