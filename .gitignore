@@ -25,6 +25,7 @@ srv/_*.py
 *.cfgc
 /cfg/cpp/
 /cfg/*.py
+/rosbag/
 
 # Python Generated Files
 *.pyc

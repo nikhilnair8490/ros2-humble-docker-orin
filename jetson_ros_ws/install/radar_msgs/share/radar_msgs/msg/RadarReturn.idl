@@ -1,0 +1,35 @@
+// generated from rosidl_adapter/resource/msg.idl.em
+// with input from radar_msgs/msg/RadarReturn.msg
+// generated code does not contain a copyright notice
+
+
+module radar_msgs {
+  module msg {
+    @verbatim (language="comment", text=
+      "All variables below are relative to the radar's frame of reference." "\n"
+      "This message is not meant to be used alone but as part of a stamped or array message.")
+    struct RadarReturn {
+      @verbatim (language="comment", text=
+        "Distance (m) from the sensor to the detected return.")
+      float range;
+
+      @verbatim (language="comment", text=
+        "Angle (in radians) in the azimuth plane between the sensor and the detected return." "\n"
+        "Positive angles are anticlockwise from the sensor and negative angles clockwise from the sensor as per REP-0103.")
+      float azimuth;
+
+      @verbatim (language="comment", text=
+        "Angle (in radians) in the elevation plane between the sensor and the detected return." "\n"
+        "Negative angles are below the sensor. For 2D radar, this will be 0.")
+      float elevation;
+
+      @verbatim (language="comment", text=
+        "The doppler speed (m/s) of the return.")
+      float doppler_velocity;
+
+      @verbatim (language="comment", text=
+        "The amplitude of the return (dB).")
+      float amplitude;
+    };
+  };
+};

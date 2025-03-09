@@ -1,0 +1,8 @@
+msg/RadarReturn.idl
+msg/RadarReturn.msg
+msg/RadarScan.idl
+msg/RadarScan.msg
+msg/RadarTrack.idl
+msg/RadarTrack.msg
+msg/RadarTracks.idl
+msg/RadarTracks.msg

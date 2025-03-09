@@ -50,13 +50,21 @@ RUN apt-get update \
 COPY entrypoint.sh /
 # Ensure execute permissions
 RUN chmod +x /entrypoint.sh
-COPY bashrc /home/${USERNAME}/.bashrc
+#COPY bashrc /home/${USERNAME}/.bashrc
+
+# Update the .bashrc file to source the ROS 2 setup files properly
+RUN echo "source /opt/ros/humble/setup.bash" >> /home/${USERNAME}/.bashrc \
+ && echo "source /home/${USERNAME}/docker_ros_ws/install/setup.bash" >> /home/${USERNAME}/.bashrc \
+ && echo "source /usr/share/colcon_argcomplete/hook/colcon-argcomplete.bash" >> /home/${USERNAME}/.bashrc
 
 RUN mkdir -p /home/${USERNAME}/docker_ros_ws/src
 WORKDIR /home/${USERNAME}/docker_ros_ws
 COPY jetson_ros_ws/install /home/${USERNAME}/docker_ros_ws/install
 COPY jetson_ros_ws/src /home/${USERNAME}/docker_ros_ws/src
  
+RUN rosdep update \
+    && rosdep install --from-paths src --ignore-src -r -y
+
 # Set up entrypoint and default command
 ENTRYPOINT ["/bin/bash", "/entrypoint.sh"]
 CMD ["bash"]

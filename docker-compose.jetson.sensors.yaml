@@ -5,7 +5,7 @@
 # docker compose -f docker-compose.jetson.sensors.yaml down (to stop and delete the container)
 
 services: # Services to run
-  abaja_ros_dev:   # Service name
+  ros_dev_radar:   # Service name
     image: ros_humble_jetson # Image name
     user: ros_jetson # User to run the container
     network_mode: host # Network mode
@@ -18,9 +18,12 @@ services: # Services to run
       #- "/usr/lib/aarch64-linux-gnu:/usr/lib/aarch64-linux-gnu:ro" # (Optional) Mounts essential libraries from the Jetpack system into the container
       #- "/usr/lib/udev:/usr/lib/udev:ro" # (Optional) `udev` is the device manager in Linux. Mounting `/usr/lib/udev` can be necessary for proper device detection and access within the container, especially for hardware like cameras, sensors, and USB devices connected to the Jetson.
       - "/dev:/dev" # (Optional, but often needed) The `/dev` directory contains device files that represent hardware devices. Mounting `/dev` gives the container direct access to these device files e.g CAN bus, serial ports, etc.
+    entrypoint: ["/entrypoint.sh"] # Entrypoint script
     #environment:     # Environment variables
       #DISPLAY: ${DISPLAY} # Pass DISPLAY environment variable
     # launch ros package
     #command: bash -c "source /home/ros/docker_ros_ws/install/setup.bash" # && ros2 run cpp_pubsub talker" # && tail -f /dev/null   # Keep the container running in background
     # command : ros2 run cpp_pubsub talker # && tail -f /dev/null
-    command: tail -f /dev/null
+    # command: tail -f /dev/null
+    command: ros2 launch pe_ars408_ros continental_ars408_socket_can.launch.xml interface:=vcan0 receiver_interval_sec:=0.1 input/frame:=from_can_bus output/objects:=radar_objects_raw output/scan:=radar_scan_raw
+
