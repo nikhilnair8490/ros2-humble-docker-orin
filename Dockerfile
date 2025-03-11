@@ -59,11 +59,14 @@ RUN echo "source /opt/ros/humble/setup.bash" >> /home/${USERNAME}/.bashrc \
 
 RUN mkdir -p /home/${USERNAME}/docker_ros_ws/src
 WORKDIR /home/${USERNAME}/docker_ros_ws
-COPY jetson_ros_ws/install /home/${USERNAME}/docker_ros_ws/install
+#COPY jetson_ros_ws/install /home/${USERNAME}/docker_ros_ws/install
 COPY jetson_ros_ws/src /home/${USERNAME}/docker_ros_ws/src
  
 RUN rosdep update \
     && rosdep install --from-paths src --ignore-src -r -y
+
+# Run colcon build to build the workspace
+RUN bash -c "source /opt/ros/humble/setup.bash && colcon build"
 
 # Set up entrypoint and default command
 ENTRYPOINT ["/bin/bash", "/entrypoint.sh"]
