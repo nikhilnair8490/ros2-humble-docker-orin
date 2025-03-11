@@ -1,7 +1,7 @@
 # ROS 2 Build and Development
 build/
 devel/
-#install/
+install/
 log/
 build_isolated/
 devel_isolated/
