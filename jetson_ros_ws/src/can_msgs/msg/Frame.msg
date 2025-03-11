@@ -5,6 +5,10 @@ uint8[8] data
 uint8 err
 uint8 rtr
 uint8 eff
+bool is_rtr
+bool is_extended
+bool is_error
+
 
 ## @file Frame.msg
 # @ingroup ros2can_bridge
