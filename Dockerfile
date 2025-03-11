@@ -8,9 +8,11 @@
 # https://hub.docker.com/r/arm64v8/ros/tags?name=humble
 FROM arm64v8/ros:humble-ros-base-jammy
 
+RUN apt-get update
+
 # Install some tools for development
-RUN apt-get update \
-&& apt-get install -y \
+#RUN apt-get update \
+RUN apt-get install -y \
 nano \
 # Install iproute2 package for ip command
 iproute2 \
@@ -21,7 +23,9 @@ can-utils \
 
 # Install ROS 2 development tools
 RUN apt-get update && apt-get install -y \
-ros-humble-desktop \ 
+#RUN apt-get install -y \
+#ros-humble-desktop \ 
+ros-dev-tools \
 && rm -rf /var/lib/apt/lists/*
 
 # Create a non-root user to use for development and regular use
