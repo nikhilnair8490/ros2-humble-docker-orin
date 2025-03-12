@@ -13,6 +13,7 @@ rosidl_generate_interfaces(${PROJECT_NAME}
   "msg/RadarScan.msg"
   "msg/RadarTrack.msg"
   "msg/RadarTracks.msg"
+  "msg/RadarStatus.msg"
   DEPENDENCIES builtin_interfaces std_msgs geometry_msgs unique_identifier_msgs
 )
 

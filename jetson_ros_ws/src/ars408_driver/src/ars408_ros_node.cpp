@@ -143,6 +143,43 @@ void PeContinentalArs408Node::GenerateUUIDTable()
   }
 }
 
+void PeContinentalArs408Node::PublishRadarState()
+{
+  // Ensure we have valid radar state data
+  bool validRadarState = ars408_driver_.GetCurrentRadarState(current_radar_state_);
+  if (!validRadarState) {
+    RCLCPP_WARN(this->get_logger(), "No radar state available yet.");
+    return;
+  }
+
+  // Create a RadarStatus message
+  auto msg = std::make_unique<radar_msgs::msg::RadarStatus>();
+
+  // Map RadarState fields to RadarStatus.msg fields
+  msg->read_status = current_radar_state_.NvmReadStatus;
+  msg->write_status = current_radar_state_.NvmWriteStatus;
+  msg->max_distance = current_radar_state_.MaxDistance;
+  msg->persistent_error = current_radar_state_.PersistentError;
+  msg->interference = current_radar_state_.Interference;
+  msg->temperature_error = current_radar_state_.TemperatureError;
+  msg->temporary_error = current_radar_state_.TemporaryError;
+  msg->voltage_error = current_radar_state_.VoltageError;
+  msg->sensor_id = current_radar_state_.SensorID;
+  msg->sort_index = static_cast<int8_t>(current_radar_state_.SortingMode);
+  msg->radar_power_cfg = static_cast<int8_t>(current_radar_state_.PowerMode);
+  msg->ctrl_relay_cfg = (current_radar_state_.CtrlRelay == ars408::RadarState::Config::ACTIVE);
+  msg->output_type_cfg = static_cast<int8_t>(current_radar_state_.OutputType);
+  msg->send_quality_cfg = (current_radar_state_.SendQuality == ars408::RadarState::Config::ACTIVE);
+  msg->send_ext_info_cfg = (current_radar_state_.SendExtInfo == ars408::RadarState::Config::ACTIVE);
+  msg->motion_rx_state = static_cast<int8_t>(current_radar_state_.EgoMotionRxStatus);
+  msg->rcs_threshold = (current_radar_state_.Rcs_Threshold == ars408::RadarState::Rcs_ThresholdConfig::HIGH_SENSITIVITY);
+
+  // Publish the message
+  publisher_radar_state_->publish(std::move(msg));
+
+  //RCLCPP_INFO(this->get_logger(), "Published Radar State.");
+}
+
 void PeContinentalArs408Node::Run()
 {
   output_frame_ = this->declare_parameter<std::string>("output_frame", "ars408");
@@ -163,6 +200,15 @@ void PeContinentalArs408Node::Run()
   publisher_radar_tracks_ =
     this->create_publisher<radar_msgs::msg::RadarTracks>("~/output/objects", 10);
   publisher_radar_scan_ = this->create_publisher<radar_msgs::msg::RadarScan>("~/output/scan", 10);
+
+  // Publisher for radar state
+  publisher_radar_state_ =
+      this->create_publisher<radar_msgs::msg::RadarStatus>("~/output/radar_state", 10);
+
+  // Timer to publish radar state periodically @ 1 sec
+  radar_state_timer_ = this->create_wall_timer(
+      std::chrono::seconds(1),
+      std::bind(&PeContinentalArs408Node::PublishRadarState, this));
 }
 
 #include "rclcpp_components/register_node_macro.hpp"
