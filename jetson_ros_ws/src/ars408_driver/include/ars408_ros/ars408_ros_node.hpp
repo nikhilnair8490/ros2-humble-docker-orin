@@ -35,6 +35,8 @@ class PeContinentalArs408Node : public rclcpp::Node
   rclcpp::Subscription<can_msgs::msg::Frame>::SharedPtr subscription_;
   rclcpp::Publisher<radar_msgs::msg::RadarTracks>::SharedPtr publisher_radar_tracks_;
   rclcpp::Publisher<radar_msgs::msg::RadarScan>::SharedPtr publisher_radar_scan_;
+  rclcpp::Publisher<radar_msgs::msg::RadarStatus>::SharedPtr publisher_radar_state_;
+  rclcpp::TimerBase::SharedPtr radar_state_timer_;
 
   can_msgs::msg::Frame::ConstSharedPtr can_data_;
 
@@ -67,10 +69,6 @@ public:
   explicit PeContinentalArs408Node(const rclcpp::NodeOptions & node_options);
   void RadarDetectedObjectsCallback(
     const std::unordered_map<uint8_t, ars408::RadarObject> & detected_objects);
-
-  rclcpp::Publisher<radar_msgs::msg::RadarStatus>::SharedPtr publisher_radar_state_;
-  rclcpp::TimerBase::SharedPtr radar_state_timer_;
-  
   void PublishRadarState();  // Function to publish radar state
   void Run();
 };
