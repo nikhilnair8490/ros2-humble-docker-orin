@@ -21,6 +21,7 @@
 #include "can_msgs/msg/frame.hpp"
 #include "radar_msgs/msg/radar_scan.hpp"
 #include "radar_msgs/msg/radar_tracks.hpp"
+#include "radar_msgs/msg/radar_status.hpp"
 #include "unique_identifier_msgs/msg/uuid.hpp"
 
 #include <random>
@@ -43,6 +44,7 @@ class PeContinentalArs408Node : public rclcpp::Node
   bool sequential_publish_;
   double size_x_;
   double size_y_;
+  ars408::RadarState current_radar_state_;
 
   const uint8_t max_radar_id = 255;
   std::vector<unique_identifier_msgs::msg::UUID> UUID_table_;
@@ -65,6 +67,11 @@ public:
   explicit PeContinentalArs408Node(const rclcpp::NodeOptions & node_options);
   void RadarDetectedObjectsCallback(
     const std::unordered_map<uint8_t, ars408::RadarObject> & detected_objects);
+
+  rclcpp::Publisher<radar_msgs::msg::RadarStatus>::SharedPtr publisher_radar_state_;
+  rclcpp::TimerBase::SharedPtr radar_state_timer_;
+  
+  void PublishRadarState();  // Function to publish radar state
   void Run();
 };
 
