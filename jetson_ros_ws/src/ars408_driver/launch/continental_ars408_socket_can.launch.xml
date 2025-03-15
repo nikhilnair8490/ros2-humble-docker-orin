@@ -11,6 +11,7 @@
   <arg name="output/objects" default="objects_raw" />
   <arg name="output/scan" default="scan" />
   <arg name="output/radar_state" default="radar_state" />
+  <arg name="output/radar_markers" default="radar_markers" />
   <arg name="publish_radar_track" default="true" />
   <arg name="publish_radar_scan" default="false" />
   <arg name="output_frame" default="ars408" />
@@ -28,6 +29,7 @@
     <arg name="output/objects" value="$(var output/objects)" />
     <arg name="output/scan" value="$(var output/scan)" />
     <arg name="output/radar_state" value="$(var output/radar_state)" />
+    <arg name="output/radar_markers" value="$(var output/radar_markers)" />
     <arg name="publish_radar_track" value="$(var publish_radar_track)" />
     <arg name="publish_radar_scan" value="$(var publish_radar_scan)" />
     <arg name="output_frame" value="$(var output_frame)" />
