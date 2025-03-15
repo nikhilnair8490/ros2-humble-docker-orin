@@ -49,6 +49,7 @@ class PeContinentalArs408Node : public rclcpp::Node
   double size_x_;
   double size_y_;
   ars408::RadarState current_radar_state_;
+  bool visualize_radar_markers_;
 
   const uint8_t max_radar_id = 255;
   std::vector<unique_identifier_msgs::msg::UUID> UUID_table_;
