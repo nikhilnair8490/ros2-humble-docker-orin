@@ -25,5 +25,5 @@ services: # Services to run
     #command: bash -c "source /home/ros/docker_ros_ws/install/setup.bash" # && ros2 run cpp_pubsub talker" # && tail -f /dev/null   # Keep the container running in background
     # command : ros2 run cpp_pubsub talker # && tail -f /dev/null
     # command: tail -f /dev/null
-    command: ros2 launch pe_ars408_ros continental_ars408_socket_can.launch.xml interface:=vcan0 receiver_interval_sec:=0.1 input/frame:=from_can_bus output/objects:=radar_objects_raw output/scan:=radar_scan_raw output_frame:=radar_frame
+    command: ros2 launch pe_ars408_ros continental_ars408_socket_can.launch.xml interface:=vcan0 receiver_interval_sec:=0.1 input/frame:=from_can_bus output/objects:=radar_objects_raw output/scan:=radar_scan_raw output_frame:=radar_frame visualize_radar_markers:=false
 

@@ -12,6 +12,7 @@
   <arg name="sequential_publish" default="false" />
   <arg name="size_x" default="1.8" />
   <arg name="size_y" default="1.8" />
+  <arg name="visualize_radar_markers" default="false" />
 
   <node pkg="pe_ars408_ros" exec="pe_ars408_node" name="pe_ars408_node" output="screen">
     <remap from="~/input/frame" to="$(var input/frame)" />
@@ -25,5 +26,6 @@
     <param name="sequential_publish" value="$(var sequential_publish)" />
     <param name="size_x" value="$(var size_x)" />
     <param name="size_y" value="$(var size_y)" />
+    <param name="visualize_radar_markers" value="$(var visualize_radar_markers)" />
   </node>
 </launch>

@@ -117,16 +117,22 @@ void PeContinentalArs408Node::RadarDetectedObjectsCallback(
     if (publish_radar_track_) {
       output_objects.tracks.emplace_back(ConvertRadarObjectToRadarTrack(object.second));
       // If tracks are enabled, convert to radar track message and marker (cube)
-      auto marker = ars408::Ars408Visualizer::createTrackMarker(
-        object.second, marker_id++, output_frame_, can_data_->header.stamp, size_x_, size_y_);
-      marker_array.markers.push_back(marker);
+      if (visualize_radar_markers_)
+      {
+        auto marker = ars408::Ars408Visualizer::createTrackMarker(
+            object.second, marker_id++, output_frame_, can_data_->header.stamp, size_x_, size_y_);
+        marker_array.markers.push_back(marker);
+      }
     };
     if (publish_radar_scan_) {
       output_scan.returns.emplace_back(ConvertRadarObjectToRadarReturn(object.second));
       // If scan is enabled, convert to radar scan message and marker (sphere)
-      auto marker = ars408::Ars408Visualizer::createScanMarker(
-        object.second, marker_id++, output_frame_, can_data_->header.stamp, 0.2);
-      marker_array.markers.push_back(marker);
+      if (visualize_radar_markers_)
+      {
+        auto marker = ars408::Ars408Visualizer::createScanMarker(
+            object.second, marker_id++, output_frame_, can_data_->header.stamp, 0.2);
+        marker_array.markers.push_back(marker);
+      }
     }
   }
 
@@ -138,7 +144,10 @@ void PeContinentalArs408Node::RadarDetectedObjectsCallback(
   }
 
   // Publish the MarkerArray so that rviz can visualize the markers.
-  publisher_marker_array_->publish(marker_array);
+  if (visualize_radar_markers_)
+  {
+    publisher_marker_array_->publish(marker_array);
+  }
 }
 
 unique_identifier_msgs::msg::UUID PeContinentalArs408Node::GenerateRandomUUID()
@@ -202,6 +211,7 @@ void PeContinentalArs408Node::Run()
   sequential_publish_ = this->declare_parameter<bool>("sequential_publish", false);
   size_x_ = this->declare_parameter<double>("size_x", 1.8);
   size_y_ = this->declare_parameter<double>("size_y", 1.8);
+  visualize_radar_markers_ = this->declare_parameter<bool>("visualize_radar_markers", false);
 
   ars408_driver_.RegisterDetectedObjectsCallback(
     std::bind(&PeContinentalArs408Node::RadarDetectedObjectsCallback, this, std::placeholders::_1),
@@ -225,7 +235,10 @@ void PeContinentalArs408Node::Run()
       std::bind(&PeContinentalArs408Node::PublishRadarState, this));
 
   // Publisher for radra visualization messages for rviz
-  publisher_marker_array_ = this->create_publisher<visualization_msgs::msg::MarkerArray>("~/output/radar_markers", 10);
+  if (visualize_radar_markers_)
+  {
+    publisher_marker_array_ = this->create_publisher<visualization_msgs::msg::MarkerArray>("~/output/radar_markers", 10);
+  }
 }
 
 #include "rclcpp_components/register_node_macro.hpp"
