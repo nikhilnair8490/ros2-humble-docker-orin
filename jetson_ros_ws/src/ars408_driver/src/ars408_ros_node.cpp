@@ -110,12 +110,23 @@ void PeContinentalArs408Node::RadarDetectedObjectsCallback(
   output_scan.header.frame_id = output_frame_;
   output_scan.header.stamp = can_data_->header.stamp;
 
+  visualization_msgs::msg::MarkerArray marker_array;
+  int marker_id = 0;
+
   for (const auto & object : detected_objects) {
     if (publish_radar_track_) {
       output_objects.tracks.emplace_back(ConvertRadarObjectToRadarTrack(object.second));
+      // If tracks are enabled, convert to radar track message and marker (cube)
+      auto marker = ars408::Ars408Visualizer::createTrackMarker(
+        object.second, marker_id++, output_frame_, can_data_->header.stamp, size_x_, size_y_);
+      marker_array.markers.push_back(marker);
     };
     if (publish_radar_scan_) {
       output_scan.returns.emplace_back(ConvertRadarObjectToRadarReturn(object.second));
+      // If scan is enabled, convert to radar scan message and marker (sphere)
+      auto marker = ars408::Ars408Visualizer::createScanMarker(
+        object.second, marker_id++, output_frame_, can_data_->header.stamp, 0.2);
+      marker_array.markers.push_back(marker);
     }
   }
 
@@ -125,6 +136,9 @@ void PeContinentalArs408Node::RadarDetectedObjectsCallback(
   if (publish_radar_scan_) {
     publisher_radar_scan_->publish(output_scan);
   }
+
+  // Publish the MarkerArray so that rviz can visualize the markers.
+  publisher_marker_array_->publish(marker_array);
 }
 
 unique_identifier_msgs::msg::UUID PeContinentalArs408Node::GenerateRandomUUID()
@@ -209,6 +223,9 @@ void PeContinentalArs408Node::Run()
   radar_state_timer_ = this->create_wall_timer(
       std::chrono::seconds(1),
       std::bind(&PeContinentalArs408Node::PublishRadarState, this));
+
+  // Publisher for radra visualization messages for rviz
+  publisher_marker_array_ = this->create_publisher<visualization_msgs::msg::MarkerArray>("~/output/radar_markers", 10);
 }
 
 #include "rclcpp_components/register_node_macro.hpp"

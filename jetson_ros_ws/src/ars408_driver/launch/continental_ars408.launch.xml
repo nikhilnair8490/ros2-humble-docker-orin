@@ -4,6 +4,7 @@
   <arg name="output/objects" default="objects_raw" />
   <arg name="output/scan" default="scan" />
   <arg name="output/radar_state" default="radar_state" />
+  <arg name="output/radar_markers" default="radar_markers" />
   <!-- parameter -->
   <arg name="output_frame" default="ars408" />
   <arg name="publish_radar_track" default="true" />
@@ -17,6 +18,7 @@
     <remap from="~/output/objects" to="$(var output/objects)" />
     <remap from="~/output/scan" to="$(var output/scan)" />
     <remap from="~/output/radar_state" to="$(var output/radar_state)" />
+    <remap from="~/output/radar_markers" to="$(var output/radar_markers)" />
     <param name="publish_radar_track" value="$(var publish_radar_track)" />
     <param name="publish_radar_scan" value="$(var publish_radar_scan)" />
     <param name="output_frame" value="$(var output_frame)" />

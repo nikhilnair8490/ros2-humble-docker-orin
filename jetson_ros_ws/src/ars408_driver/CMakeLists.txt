@@ -22,6 +22,7 @@ ament_auto_add_library(pe_ars408_parser SHARED
 # ROS node
 ament_auto_add_library(pe_ars408_node_component SHARED
   src/ars408_ros_node.cpp
+  src/ars408_visualizer.cpp
 )
 
 target_link_libraries(pe_ars408_node_component

@@ -16,6 +16,7 @@
 #define ARS408_ROS__ARS408_ROS_NODE_HPP_
 
 #include "ars408_ros/ars408_driver.hpp"
+#include "ars408_ros/ars408_visualizer.hpp"
 #include "rclcpp/rclcpp.hpp"
 
 #include "can_msgs/msg/frame.hpp"
@@ -37,6 +38,7 @@ class PeContinentalArs408Node : public rclcpp::Node
   rclcpp::Publisher<radar_msgs::msg::RadarScan>::SharedPtr publisher_radar_scan_;
   rclcpp::Publisher<radar_msgs::msg::RadarStatus>::SharedPtr publisher_radar_state_;
   rclcpp::TimerBase::SharedPtr radar_state_timer_;
+  rclcpp::Publisher<visualization_msgs::msg::MarkerArray>::SharedPtr publisher_marker_array_;
 
   can_msgs::msg::Frame::ConstSharedPtr can_data_;
 
