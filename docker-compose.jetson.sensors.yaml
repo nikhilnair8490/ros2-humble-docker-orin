@@ -5,7 +5,7 @@
 # docker compose -f docker-compose.jetson.sensors.yaml down (to stop and delete the container)
 
 services: # Services to run
-  ros_dev_radar: # Service name
+  ros_dev_radar: # Radar service
     image: ros_humble_jetson # Image name
     user: ros_jetson # User to run the container
     network_mode: host # Network mode
@@ -38,3 +38,16 @@ services: # Services to run
       - output_frame:=radar_frame
       # Enable/disable visualization of radar markers topic for RViz2
       - visualize_radar_markers:=false
+  ros_dev_cam: # Camera service
+    image: ros_humble_jetson
+    user: ros_jetson
+    network_mode: host
+    ipc: host
+    privileged: true
+    runtime: nvidia
+    volumes:
+      - "/dev:/dev"
+    entrypoint: ["/entrypoint.sh"]
+    command:
+      # Launch the usb camera node (the parameters are set in the config/params_1.yaml file)
+      - ros2 launch usb_cam camera.launch.py

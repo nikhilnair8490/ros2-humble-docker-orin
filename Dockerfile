@@ -36,7 +36,9 @@ ARG USER_GID=$USER_UID
 # Add user in the group
 RUN groupadd --gid $USER_GID $USERNAME \
     # Add a new user with specified username, user ID, and group ID, and set their default shell to bash
-    && useradd -s /bin/bash --uid $USER_UID --gid $USER_GID -m $USERNAME
+    && useradd -s /bin/bash --uid $USER_UID --gid $USER_GID -m $USERNAME \
+    # Add user to video group to access camera devices
+    && usermod -aG video $USERNAME
 
 # Set up sudo for the user to run commands as root
 RUN apt-get update \
@@ -65,6 +67,12 @@ RUN mkdir -p /home/${USERNAME}/docker_ros_ws/src
 WORKDIR /home/${USERNAME}/docker_ros_ws
 #COPY jetson_ros_ws/install /home/${USERNAME}/docker_ros_ws/install
 COPY jetson_ros_ws/src /home/${USERNAME}/docker_ros_ws/src
+
+# Ensure system knows about ROS2 sources and dependencies
+RUN apt-get update && apt-get install -y curl gnupg2 lsb-release && \
+    curl -s https://raw.githubusercontent.com/ros/rosdistro/master/ros.key | apt-key add - && \
+    echo "deb http://packages.ros.org/ros2/ubuntu $(lsb_release -cs) main" > /etc/apt/sources.list.d/ros2-latest.list && \
+    apt-get update
  
 RUN rosdep update \
     && rosdep install --from-paths src --ignore-src -r -y
