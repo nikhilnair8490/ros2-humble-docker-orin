@@ -1,0 +1,40 @@
+/**:
+  ros__parameters:
+    video_device: "/dev/video0"
+
+    # Image format
+    image_width: 640
+    image_height: 480
+    pixel_format: "mjpeg2rgb"     # Converts MJPG to RGB internally
+    av_device_format: "YUV422P"   # Optional, won't affect MJPEG input
+
+    # Frame settings
+    framerate: 30.0
+    io_method: "mmap"
+    frame_id: "camera"
+
+    # Camera info / calibration
+    camera_name: "logitech_c525"
+    camera_info_url: "package://usb_cam/config/camera_info.yaml"
+
+    # Exposure and gain
+    autoexposure: true
+    exposure: 664                 # default captured value, used if autoexposure = false
+    gain: 128                     # default value for this camera
+
+    # White balance
+    auto_white_balance: true
+    white_balance: 5776           # camera default, used only if auto = false
+
+    # Focus
+    autofocus: true               # camera default
+    focus: 65                     # only used if autofocus = false
+
+    # Image tuning (from current v4l2 settings)
+    brightness: 162
+    contrast: 36
+    saturation: 4
+    sharpness: 22
+
+    # Optional (used in some cameras)
+    power_line_frequency: 2       # 60Hz, prevents flicker under certain lights
