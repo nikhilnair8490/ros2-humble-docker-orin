@@ -1,0 +1,44 @@
+# This file is used to run the YOLO object detection container with docker-compose on Jetson Orin Nano (arm64)
+# You can run the container with the following command:
+# docker compose -f docker-compose.jetson.ObjDetection.yaml up -d (to run in background)
+# docker compose -f docker-compose.jetson.ObjDetection.yaml exec ros_dev_yolo bash (to enter the container)
+# docker compose -f docker-compose.jetson.ObjDetection.yaml down (to stop and delete the container)
+
+# This container is not optimized for Jetson Orin Nano and it can only use CPU for inference
+
+services: # Services to run
+  ros_dev_yolo: # YOLO object detection service
+    image: ros_humble_jetson # Docker image with yolo_ros already built in
+    user: ros_jetson # User inside the container
+    network_mode: host # Use host networking so ROS topics can be shared
+    ipc: host # Share IPC namespace (useful for GPU/memory intensive apps)
+    privileged: true # Give container access to all devices
+    runtime: nvidia # Required for GPU access using NVIDIA Container Toolkit
+    volumes:
+      - "/dev:/dev" # Mount hardware device interfaces (e.g. camera, GPU)
+      - "/usr/local/cuda:/usr/local/cuda:ro"     # CUDA toolkit
+      - "/usr/lib/aarch64-linux-gnu:/usr/lib/aarch64-linux-gnu:ro"  # Jetson CUDA shared libs
+      - "/usr/local/cuda/targets/aarch64-linux/lib:/usr/local/cuda/targets/aarch64-linux/lib:ro"  # Jetson CUDA libraries
+      # - "/dev/nvhost-ctrl:/dev/nvhost-ctrl"
+      # - "/dev/nvhost-ctrl-gpu:/dev/nvhost-ctrl-gpu"
+      # - "/dev/nvhost-gpu:/dev/nvhost-gpu"
+      # - "/dev/nvmap:/dev/nvmap"
+    environment:
+      - CUDA_VISIBLE_DEVICES=0
+      - NVIDIA_VISIBLE_DEVICES=0 # Good practice with nvidia runtime
+      - NVIDIA_DRIVER_CAPABILITIES=all # Good practice with nvidia runtime
+    # - LD_LIBRARY_PATH=/usr/local/cuda/lib64:/usr/local/cuda/lib64/stubs:/usr/lib/aarch64-linux-gnu:/usr/local/cuda/targets/aarch64-linux/lib:$LD_LIBRARY_PATH
+    entrypoint: ["/entrypoint.sh"] # Ensure environment is sourced before running
+    command:
+      # Launch the YOLOv11 model with key parameters
+      - ros2 launch yolo_bringup yolo.launch.py
+      - model:=/home/ros_jetson/docker_ros_ws/src/yolo_ros/models/yolo11n.pt    # YOLO model to use
+      - input_image_topic:=/camera1/image_raw    # Topic from your camera node
+      - device:=cpu                          # Use GPU(cuda:0)/CPU (cpu) (Jetson)
+      - threshold:=0.5                           # Minimum confidence to report detection
+      - iou:=0.7                                 # IoU threshold for NMS
+      - imgsz_width:=640                         # Inference width
+      - imgsz_height:=480                        # Inference height
+      - use_tracking:=False                       # Enable ByteTrack tracking
+      - use_3d:=False                            # Disable 3D detection
+      - use_debug:=True                          # Enable annotated image publishing
